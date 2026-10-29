@@ -20,7 +20,7 @@ function colonLabel(line) {
   return parseChordLine(rest) ? m : null;
 }
 
-function normalize(text) {
+export function normalizeLines(text) {
   return text
     .replace(/\r\n?/g, '\n')
     .replace(/ /g, ' ')
@@ -53,7 +53,7 @@ export function parseCifra(text) {
     cur = null;
   };
 
-  for (let line of normalize(text)) {
+  for (let line of normalizeLines(text)) {
     if (!line.trim()) { close(); continue; }
     if (TAB_RE.test(line) || META_RE.test(line)) continue;
 

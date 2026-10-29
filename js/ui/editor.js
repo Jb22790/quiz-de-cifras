@@ -7,6 +7,7 @@ import {
   moveStanza, duplicateStanza, deleteStanza, renameStanza, setCounts,
   moveLines, duplicateLines, deleteLines, linesToStanza,
   setChord, shiftChord, removeChord, addChord, distinctChords, createHistory,
+  lineToText, parseLineText, replaceLine,
 } from '../core/edit.js';
 
 const PALETTE = ['#5ec8ff', '#2ed47a', '#ff7ad9', '#ffb627', '#b18cff', '#ff8a5c'];
@@ -175,6 +176,7 @@ export function render(root, ctx, id) {
       buttons = [
         btn('⧉', 'Duplicar', run(duplicateLines), none),
         btn('↕', 'Mover', () => { moving = true; draw(); }, none),
+        btn('✎', 'Editar texto', editText, selected.size !== 1),
         btn('📦', 'Virar estrofe', run(linesToStanza), none),
         btn('🗑', 'Apagar', run(deleteLines), none),
       ];
@@ -189,6 +191,33 @@ export function render(root, ctx, id) {
   }
 
   // ---------- menus ----------
+  function editText() {
+    const addr = selectedAddrs()[0];
+    if (!addr) return;
+    const line = song.stanzas[addr.s].lines[addr.l];
+    const area = h('textarea', { class: 'field linetext', wrap: 'off', spellcheck: false, autocapitalize: 'off', autocomplete: 'off', rows: 3 });
+    area.value = lineToText(line);
+    const close = sheet(() => [
+      h('h3', null, 'Editar texto da frase'),
+      h('p', null, 'Linha de cima: acordes. Linha de baixo: letra. Os espaços definem em que sílaba cada acorde entra.'),
+      area,
+      h('div', { class: 'stack' },
+        h('button', {
+          class: 'btn',
+          onclick: () => {
+            let parsed;
+            try { parsed = parseLineText(area.value); } catch (e) { ctx.toast(e.message); return; }
+            close();
+            selected = new Set();
+            selecting = false;
+            apply(replaceLine(song, addrOf(line.id), parsed));
+          },
+        }, 'Salvar'),
+        h('button', { class: 'btn sec', onclick: () => close() }, 'Cancelar')),
+    ]);
+    setTimeout(() => area.focus(), 50);
+  }
+
   async function confirmDeleteStanza(s) {
     const ok = await ctx.confirmDialog({ title: `Apagar "${stanzaLabel(song.stanzas[s], s)}"?`, text: 'Dá pra desfazer depois com ↶.', ok: 'Apagar' });
     if (ok) apply(deleteStanza(song, s));

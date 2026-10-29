@@ -228,3 +228,9 @@ textarea.field { font-family: var(--mono); font-size: 12px; line-height: 1.4; fl
 @keyframes starin { from { transform: scale(0) rotate(-90deg); } }
 .result .note { color: var(--mut); background: var(--card); padding: 10px 14px; border-radius: 14px; }
 .result .stack { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin-top: 18px; }
+
+.search { margin: -4px 0 14px; }
+.search .field { padding: 11px 14px; }
+textarea.field.linetext { min-height: 0; flex: none; font-size: 14px; line-height: 1.5; overflow-x: auto; }
+.bar .in { gap: 6px; }
+.bar .in button { font-size: 11px; }

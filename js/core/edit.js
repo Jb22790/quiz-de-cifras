@@ -2,6 +2,8 @@
 // Um endereço de frase é { s: índiceDaEstrofe, l: índiceDaFrase }.
 
 import { newStanza, cloneStanza, cloneLine } from './model.js';
+import { parseChordLine } from './chords.js';
+import { normalizeLines } from './parser.js';
 
 const copy = song => structuredClone(song);
 const dropEmpty = song => ({ ...song, stanzas: song.stanzas.filter(s => s.lines.length) });
@@ -141,4 +143,50 @@ export function createHistory(limit = 30) {
     undo() { return stack.pop() ?? null; },
     canUndo() { return stack.length > 0; },
   };
+}
+
+// ---------- edição do texto de uma frase ----------
+
+export function formatChordLine(chords) {
+  let out = '';
+  for (const c of chords) {
+    const pad = c.col - out.length;
+    out += pad > 0 ? ' '.repeat(pad) : (out ? ' ' : '');
+    out += c.name;
+  }
+  return out;
+}
+
+export function lineToText(line) {
+  const chords = formatChordLine(line.chords);
+  if (chords && line.lyric) return `${chords}\n${line.lyric}`;
+  return chords || line.lyric;
+}
+
+// Lê "acordes em cima, letra embaixo". Lança Error com mensagem pro usuário.
+export function parseLineText(text) {
+  const lines = normalizeLines(text).filter(l => l.trim());
+  if (!lines.length) throw new Error('A frase não pode ficar vazia');
+  if (lines.length > 2) throw new Error('Edite uma frase só: acordes em cima, letra embaixo');
+  const chords = parseChordLine(lines[0]);
+  if (lines.length === 2) {
+    if (!chords) throw new Error('A linha de cima precisa ter só acordes');
+    return { lyric: lines[1].trimEnd(), chords };
+  }
+  return chords ? { lyric: '', chords } : { lyric: lines[0].trimEnd(), chords: [] };
+}
+
+export function replaceLine(song, addr, { lyric, chords }) {
+  return withLine(song, addr, line => {
+    line.lyric = lyric;
+    line.chords = chords.map(c => ({ name: c.name, col: c.col }));
+  });
+}
+
+// ---------- busca ----------
+
+const fold = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+
+export function matchesTitle(title, query) {
+  return fold(title).includes(fold(query));
 }

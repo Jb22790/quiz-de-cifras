@@ -3,6 +3,9 @@
 import { h, sheet } from './dom.js';
 import { buildQuestions } from '../core/quiz.js';
 import { exportJson, parseBackup, mergeData, backupFilename } from '../core/store.js';
+import { matchesTitle } from '../core/edit.js';
+
+let query = '';
 
 const COLORS = ['var(--pink)', 'var(--blu)', 'var(--pri)', 'var(--ok)'];
 const EMOJIS = ['🎤', '🎸', '🥁', '🎹', '🎻', '🎺', '🪕', '🎷'];
@@ -21,16 +24,31 @@ export function render(root, ctx) {
       onclick: () => { ctx.commit(st => { st.prefs.options = n; }); draw(); },
     }, String(n))));
 
-  const list = state.songs.length
-    ? h('div', { class: 'songs' }, state.songs.map((song, i) => songCard(song, i, ctx, draw)))
-    : h('div', { class: 'empty' }, h('div', { class: 'big' }, '🎶'),
-      'Nenhuma música ainda.', h('br'), 'Toque em ', h('b', null, '＋ Colar cifra'), ' pra começar.');
+  const list = h('div', { class: 'songs' });
+  const fillList = () => {
+    const found = state.songs.map((song, i) => [song, i]).filter(([song]) => matchesTitle(song.title, query));
+    list.replaceChildren(...(found.length
+      ? found.map(([song, i]) => songCard(song, i, ctx, draw))
+      : [h('div', { class: 'empty' }, h('div', { class: 'big' }, '🔎'), `Nenhuma música com "${query.trim()}".`)]));
+  };
+
+  const search = state.songs.length > 0 && h('div', { class: 'search' },
+    h('input', {
+      class: 'field', type: 'search', placeholder: '🔎 Buscar música', value: query,
+      autocomplete: 'off', 'aria-label': 'Buscar música',
+      oninput: e => { query = e.target.value; fillList(); },
+    }));
+
+  if (state.songs.length) fillList();
+  else list.replaceChildren(h('div', { class: 'empty' }, h('div', { class: 'big' }, '🎶'),
+    'Nenhuma música ainda.', h('br'), 'Toque em ', h('b', null, '＋ Colar cifra'), ' pra começar.'));
 
   root.append(h('section', { class: 'screen' },
     h('div', { class: 'top' },
       h('h1', null, 'Minhas músicas'),
       h('button', { class: 'ico', 'aria-label': 'Configurações', onclick: () => openSettings(ctx, draw) }, '⚙️')),
     chips,
+    search,
     list,
     h('button', { class: 'fab', onclick: () => ctx.go('#/nova') }, '＋ Colar cifra')));
 }
