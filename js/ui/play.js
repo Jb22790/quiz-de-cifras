@@ -56,8 +56,19 @@ export function render(root, ctx, id) {
       },
     });
 
+    const showHistory = ctx.state.prefs.showHistory;
+    const toggleHistory = pos > 0 && h('button', {
+      class: 'histbtn',
+      onclick: e => {
+        e.stopPropagation();
+        ctx.commit(st => { st.prefs.showHistory = !st.prefs.showHistory; });
+        draw();
+      },
+    }, showHistory ? '▼ esconder o que já passou' : '▲ ver o que já passou');
+
     const lyrics = ctx.state.prefs.showLyrics && h('div', { class: 'lyr' },
-      prev && h('div', { class: 'past' }, cifraLine(prev.line)),
+      toggleHistory,
+      showHistory ? history(pos) : prev && h('div', { class: 'past' }, cifraLine(prev.line)),
       current);
 
     const opts = h('div', { class: `opts n${session.options.length}` }, session.options.map(o => {
@@ -87,6 +98,23 @@ export function render(root, ctx, id) {
 
     if (last && !last.correct) screen.addEventListener('click', advance, { once: true });
     return screen;
+  }
+
+  // Todas as frases antes da atual, com os acordes, separadas por estrofe.
+  function history(pos) {
+    const box = h('div', { class: 'hist' });
+    let lastS = -1;
+    flat.slice(0, pos).forEach(({ s, line }) => {
+      if (s !== lastS) {
+        box.append(h('div', { class: 'hist-st' }, stanzaLabel(song.stanzas[s], s)));
+        lastS = s;
+      }
+      box.append(h('div', { class: 'past' }, cifraLine(line)));
+    });
+    const q = session.questions[session.index];
+    if (q.s !== lastS) box.append(h('div', { class: 'hist-st' }, stanzaLabel(song.stanzas[q.s], q.s)));
+    requestAnimationFrame(() => { box.scrollTop = box.scrollHeight; });
+    return box;
   }
 
   function feedbackRight() {

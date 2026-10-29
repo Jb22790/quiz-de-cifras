@@ -1,6 +1,6 @@
 // Service worker: guarda o app no aparelho pra funcionar offline.
 // IMPORTANTE: troque o número de CACHE sempre que mudar qualquer arquivo da lista.
-const CACHE = 'cifraquiz-v2';
+const CACHE = 'cifraquiz-v3';
 
 const SHELL = [
   './',

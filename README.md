@@ -6,7 +6,7 @@ App de estudo para treinar o ouvido. Você dá play na música no Spotify e, a c
 
 1. Copie a cifra no Cifra Club e toque em **＋ Colar cifra**.
 2. Confira no editor. Lá você pode arrastar frases e estrofes, duplicar, apagar, trocar acordes e marcar estrofes que **não contam** no jogo (a Intro já vem marcada). Em **Selecionar**, com uma frase marcada, o botão **Editar texto** deixa mudar a letra e os acordes dela.
-3. Toque na música pra jogar. No ⏸ dá pra pular pra qualquer estrofe, reiniciar e esconder a letra.
+3. Toque na música pra jogar. No ⏸ dá pra pular pra qualquer estrofe, reiniciar e esconder a letra. O botão **▲ ver o que já passou** mostra a letra e os acordes anteriores.
 
 As músicas ficam salvas **só no aparelho**. Em ⚙️ você exporta e importa um backup (.json). Faça isso de vez em quando.
 

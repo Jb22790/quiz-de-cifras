@@ -8,7 +8,7 @@ const song = (id, title = id) => ({ id, title, createdAt: 1, best: null, stanzas
 test('empty storage gives defaults', () => assert.deepEqual(load(fake()), { songs: [], prefs: DEFAULT_PREFS }));
 test('round trip', () => {
   const st = fake();
-  const data = { songs: [song('a')], prefs: { options: 2, showLyrics: false } };
+  const data = { songs: [song('a')], prefs: { options: 2, showLyrics: false, showHistory: true } };
   save(data, st);
   assert.ok(st.m.has(KEY));
   assert.deepEqual(load(st), data);
@@ -19,7 +19,7 @@ test('corrupt storage gives defaults', () => {
 });
 test('missing prefs fields filled', () => {
   const st = fake(); st.setItem(KEY, JSON.stringify({ songs: [], prefs: { options: 3 } }));
-  assert.deepEqual(load(st).prefs, { options: 3, showLyrics: true });
+  assert.deepEqual(load(st).prefs, { options: 3, showLyrics: true, showHistory: false });
 });
 test('export/parse round trip', () => {
   const data = { songs: [song('a')], prefs: DEFAULT_PREFS };
@@ -52,4 +52,8 @@ test('final review: backup with malformed stanzas rejected', () => {
 test('final review: invalid prefs fall back to defaults', () => {
   const txt = JSON.stringify({ app: 'cifraquiz', version: 1, songs: [], prefs: { options: 'x', showLyrics: 3 } });
   assert.deepEqual(parseBackup(txt).prefs, DEFAULT_PREFS);
+});
+test('showHistory pref kept when boolean', () => {
+  const st = fake(); st.setItem(KEY, JSON.stringify({ songs: [], prefs: { showHistory: true } }));
+  assert.equal(load(st).prefs.showHistory, true);
 });

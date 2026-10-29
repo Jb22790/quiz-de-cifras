@@ -1,7 +1,7 @@
 // Persistência no aparelho e backup (exportar / importar).
 
 export const KEY = 'cifraquiz.v1';
-export const DEFAULT_PREFS = { options: 4, showLyrics: true };
+export const DEFAULT_PREFS = { options: 4, showLyrics: true, showHistory: false };
 
 const INVALID = 'Arquivo de backup inválido';
 
@@ -9,6 +9,7 @@ function cleanPrefs(p) {
   return {
     options: [2, 3, 4].includes(p?.options) ? p.options : DEFAULT_PREFS.options,
     showLyrics: typeof p?.showLyrics === 'boolean' ? p.showLyrics : DEFAULT_PREFS.showLyrics,
+    showHistory: typeof p?.showHistory === 'boolean' ? p.showHistory : DEFAULT_PREFS.showHistory,
   };
 }
 

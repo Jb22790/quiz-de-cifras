@@ -234,3 +234,9 @@ textarea.field { font-family: var(--mono); font-size: 12px; line-height: 1.4; fl
 textarea.field.linetext { min-height: 0; flex: none; font-size: 14px; line-height: 1.5; overflow-x: auto; }
 .bar .in { gap: 6px; }
 .bar .in button { font-size: 11px; }
+
+.histbtn { display: block; margin: -2px auto 8px; font-size: 12px; color: var(--blu); background: var(--card2); padding: 5px 12px; border-radius: 999px; }
+.hist { max-height: max(90px, calc(100dvh - 580px)); overflow: auto; margin-bottom: 8px; padding: 0 4px 6px 0; border-bottom: 1px dashed #4a3f80; }
+.hist .past { opacity: .55; margin-bottom: 4px; }
+.hist-st { font-size: 11px; color: var(--mut); text-transform: uppercase; letter-spacing: .5px; margin: 8px 0 2px; }
+.hist-st:first-child { margin-top: 0; }
