@@ -48,9 +48,20 @@ export function render(root, ctx) {
       h('h1', null, 'Minhas músicas'),
       h('button', { class: 'ico', 'aria-label': 'Configurações', onclick: () => openSettings(ctx, draw) }, '⚙️')),
     chips,
+    minigame(),
     search,
     list,
     h('button', { class: 'fab', onclick: () => ctx.go('#/nova') }, '＋ Colar cifra')));
+}
+
+// Atalho pro minigame Quadradinhos (página separada: quadradinhos.html)
+function minigame() {
+  return h('a', { class: 'song minigame', href: 'quadradinhos.html' },
+    h('div', { class: 'cover', style: 'background:var(--pink)' }, '🟥'),
+    h('div', { class: 'info' },
+      h('b', null, 'Quadradinhos'),
+      h('small', null, 'Treinar as sequências maiores e menores do cavaco')),
+    h('span', { class: 'go' }, '▶'));
 }
 
 function songCard(song, i, ctx, draw) {

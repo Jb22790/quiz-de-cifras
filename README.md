@@ -8,6 +8,10 @@ App de estudo para treinar o ouvido. Você dá play na música no Spotify e, a c
 2. Confira no editor. Lá você pode arrastar frases e estrofes, duplicar, apagar, trocar acordes e marcar estrofes que **não contam** no jogo (a Intro já vem marcada). Em **Selecionar**, com uma frase marcada, o botão **Editar texto** deixa mudar a letra e os acordes dela.
 3. Toque na música pra jogar. No ⏸ dá pra pular pra qualquer estrofe, reiniciar e esconder a letra. O botão **▲ ver o que já passou** mostra a letra e os acordes anteriores.
 
+## Quadradinhos (minigame)
+
+Na tela inicial, o cartão **Quadradinhos** abre um treino das sequências do cavaco (maior: I → VI7 → IIm → V7, menor: Im → I7 → IVm → V7). O app mostra o acorde natural e você escolhe os próximos pelos desenhos. O botão 📖 mostra todas as sequências completas pra estudar, e **Treinar ▶** joga uma específica. Os desenhos ficam em `js/quadradinhos/dados.js`.
+
 As músicas ficam salvas **só no aparelho**. Em ⚙️ você exporta e importa um backup (.json). Faça isso de vez em quando.
 
 ## Instalar no celular

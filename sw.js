@@ -1,6 +1,6 @@
 // Service worker: guarda o app no aparelho pra funcionar offline.
 // IMPORTANTE: troque o número de CACHE sempre que mudar qualquer arquivo da lista.
-const CACHE = 'cifraquiz-v3';
+const CACHE = 'cifraquiz-v4';
 
 const SHELL = [
   './',
@@ -25,6 +25,11 @@ const SHELL = [
   './js/ui/home.js',
   './js/ui/paste.js',
   './js/ui/play.js',
+  './quadradinhos.html',
+  './css/quadradinhos.css',
+  './js/quadradinhos/dados.js',
+  './js/quadradinhos/motor.js',
+  './js/quadradinhos/jogo.js',
 ];
 
 self.addEventListener('install', e => {

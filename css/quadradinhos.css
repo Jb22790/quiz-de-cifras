@@ -1,0 +1,180 @@
+/* Quadradinhos: segue a identidade visual do Quiz de Cifras (APP CIFRA) */
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("../fonts/fredoka-latin.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+:root {
+  --bg: #1a1530;
+  --card: #2a2250;
+  --card2: #352b66;
+  --txt: #f4f0ff;
+  --mut: #a99fd0;
+  --pri: #ffb627;
+  --ok: #2ed47a;
+  --err: #ff4d6d;
+  --blu: #5ec8ff;
+  --pink: #ff7ad9;
+  --shadow: #150f2b;
+  --font: 'Fredoka', ui-rounded, 'Nunito', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: var(--font);
+  font-size: 16px;
+  overscroll-behavior-y: contain;
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; padding: 0; }
+
+.qd {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+}
+
+/* ---------- topo ---------- */
+.top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.top h1 { margin: 0; font-size: 22px; font-weight: 600; flex: 1; }
+.ico {
+  width: 40px; height: 40px; border-radius: 13px; background: var(--card);
+  display: grid; place-items: center; font-size: 18px; flex: none; color: var(--txt); text-decoration: none;
+}
+.ico:active { transform: scale(.94); }
+
+.nops { display: flex; gap: 4px; background: var(--card); border-radius: 13px; padding: 4px; flex: none; }
+.nops::before { content: 'opções'; align-self: center; color: var(--mut); font-size: 12px; padding: 0 4px 0 6px; }
+.nops button { width: 32px; height: 32px; border-radius: 10px; color: var(--mut); font-weight: 600; }
+.nops button.on { background: var(--blu); color: #06263a; }
+
+.chips { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 6px; margin: 0 0 12px; }
+.chip { background: var(--card); padding: 8px 6px; border-radius: 999px; color: var(--mut); font-size: 14px; text-align: center; }
+.chip.on { background: var(--blu); color: #06263a; font-weight: 600; }
+
+/* ---------- progresso e placar ---------- */
+.prog { height: 10px; background: var(--card); border-radius: 99px; overflow: hidden; margin: 2px 0 8px; }
+.prog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--pri)); transition: width .3s; }
+.meta { display: flex; justify-content: space-between; color: var(--mut); font-size: 14px; }
+.meta .placar { display: flex; gap: 10px; font-variant-numeric: tabular-nums; }
+.pill { align-self: center; margin: 12px 0 0; background: var(--card2); padding: 6px 14px; border-radius: 999px; font-size: 14px; color: var(--blu); }
+
+/* ---------- a sequência (4 casas) ---------- */
+.seq {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  background: var(--card); border-radius: 18px; padding: 10px; margin: 12px 0 4px;
+}
+.casa {
+  border-radius: 12px; padding: 4px 3px 2px; text-align: center; background: var(--card2);
+  border: 2px solid transparent; min-width: 0;
+}
+.casa .nome { font-weight: 700; font-size: 15px; color: var(--pri); line-height: 1.3; }
+.casa.vazia { display: grid; place-items: center; aspect-ratio: 100 / 166; border: 2px dashed #4a3f80; background: transparent; }
+.casa.vazia .nome { color: #4a3f80; font-size: 24px; }
+.casa.atual { border-color: var(--pink); }
+.casa.atual .nome { color: var(--pink); animation: pulse 1s infinite; }
+.casa.ok { border-color: var(--ok); }
+.casa.err { border-color: var(--err); }
+@keyframes pulse { 50% { transform: scale(1.18); } }
+
+.ask { text-align: center; color: var(--mut); margin: 10px 0; min-height: 22px; }
+
+/* ---------- opções ---------- */
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; padding-bottom: 6px; }
+.opts.n3 .opt:last-child { grid-column: span 2; justify-self: center; width: calc(50% - 6px); }
+.opt {
+  position: relative; background: var(--card); border-radius: 22px; padding: 8px 10px 6px;
+  box-shadow: 0 6px 0 var(--shadow); transition: transform .08s; text-align: center;
+}
+.opt .nome { font-size: 22px; font-weight: 700; line-height: 1.2; }
+.opt .dg { width: 58%; margin: 2px auto 0; }
+.opts.n2 .opt .dg { width: 78%; }
+.opt:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--shadow); }
+.opt.ok { background: var(--ok); color: #03301a; box-shadow: 0 6px 0 #1b8a4f; animation: pop .3s; }
+.opt.err { background: var(--err); color: #3a0010; box-shadow: 0 6px 0 #a3233b; animation: shake .35s; }
+.opt.dim { opacity: .45; }
+.opt .tecla { position: absolute; top: 8px; left: 12px; font-size: 12px; color: var(--mut); opacity: .7; }
+.opt.ok .tecla, .opt.err .tecla { color: inherit; }
+@keyframes pop { 50% { transform: scale(1.06); } }
+@keyframes shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+
+.btn {
+  display: block; width: 100%; margin-top: auto;
+  background: var(--pri); color: #2a1a00; font-weight: 700; border-radius: 18px; padding: 16px 18px;
+  box-shadow: 0 5px 0 #c47f00; font-size: 18px; text-align: center;
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #c47f00; }
+.fim { text-align: center; font-size: 20px; font-weight: 600; margin: 8px 0 14px; }
+.fim small { display: block; color: var(--mut); font-size: 14px; font-weight: 400; margin-top: 4px; }
+
+/* ---------- desenho do quadradinho ---------- */
+.qd-svg { width: 100%; height: auto; display: block; }
+.qd-braco { fill: #f6ecd8; }
+.qd-corda, .qd-traste { stroke: #8f8a80; stroke-width: 1; }
+.qd-pestana-fixa { stroke: #6b665d; stroke-width: 3; }
+.qd-bola { fill: #d32f2f; stroke: #8e1b1b; stroke-width: 1; }
+.qd-dedo { fill: #fff; font-size: 10px; font-weight: 700; text-anchor: middle; font-family: var(--font); }
+.qd-seta { stroke: #d32f2f; stroke-width: 4; }
+.qd-seta-ponta { fill: #d32f2f; }
+
+/* telas baixas: diagrama das opções menor pra caber tudo sem rolar */
+@media (max-height: 740px) {
+  .opt .dg { width: 48%; }
+  .opts.n2 .opt .dg { width: 66%; }
+  .opt .nome { font-size: 19px; }
+  .pill { margin-top: 8px; }
+  .seq { margin-top: 8px; }
+}
+@media (min-width: 520px) {
+  .opt .dg { width: 46%; }
+  .opts.n2 .opt .dg { width: 60%; }
+}
+
+/* celulares estreitos (~360px) */
+.top h1 { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 440px) { .nops::before { display: none; } }
+@media (max-width: 380px) { .top h1 { font-size: 19px; } }
+@media (max-height: 680px) {
+  .opt .dg { width: 40%; }
+  .opts.n2 .opt .dg { width: 56%; }
+  .opts { gap: 10px; }
+  .ask { margin: 6px 0; }
+  .seq { padding: 8px; gap: 6px; }
+}
+#fim { margin-top: auto; padding-bottom: 6px; }
+
+.chip.estudar { padding: 8px 12px; background: var(--card2); }
+
+/* ---------- modo estudar (folha que sobe, igual ao Quiz de Cifras) ---------- */
+.overlay {
+  position: fixed; inset: 0; background: #0009; display: flex; align-items: flex-end; justify-content: center;
+  z-index: 50; animation: fade .15s;
+}
+.sheet {
+  background: var(--card); width: 100%; max-width: 560px; border-radius: 24px 24px 0 0;
+  padding: 16px 14px max(18px, env(safe-area-inset-bottom)); max-height: 92dvh; overflow: auto;
+  animation: up .2s ease-out; overscroll-behavior: contain;
+}
+.sheet-top { display: flex; align-items: center; gap: 10px; }
+.sheet-top h3 { margin: 0; font-size: 19px; font-weight: 600; flex: 1; }
+.sheet-top .ico { background: var(--card2); }
+.sheet > p { color: var(--mut); margin: 6px 0 12px; font-size: 14px; }
+@keyframes fade { from { opacity: 0; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } }
+
+.estudo-seq { background: var(--card2); border-radius: 18px; padding: 10px; margin-bottom: 10px; }
+.estudo-topo { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 8px; }
+.estudo-topo b { font-weight: 600; }
+.treinar { background: var(--pri); color: #2a1a00; font-weight: 700; font-size: 14px; border-radius: 12px; padding: 6px 12px; box-shadow: 0 3px 0 #c47f00; }
+.treinar:active { transform: translateY(2px); box-shadow: 0 1px 0 #c47f00; }
+.estudo-grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.estudo-grade .casa { background: var(--card); }

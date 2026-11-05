@@ -240,3 +240,7 @@ textarea.field.linetext { min-height: 0; flex: none; font-size: 14px; line-heigh
 .hist .past { opacity: .55; margin-bottom: 4px; }
 .hist-st { font-size: 11px; color: var(--mut); text-transform: uppercase; letter-spacing: .5px; margin: 8px 0 2px; }
 .hist-st:first-child { margin-top: 0; }
+
+/* ---------- atalho pro minigame Quadradinhos ---------- */
+.song.minigame { color: inherit; text-decoration: none; margin-bottom: 14px; background: var(--card2); }
+.song.minigame .go { color: var(--pri); font-size: 18px; padding: 0 6px; }
