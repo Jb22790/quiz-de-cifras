@@ -26,6 +26,21 @@ test('filtrarSequencias separa maiores, menores e todas', () => {
   assert.equal(M.filtrarSequencias(D.sequencias, 'todas').length, 14);
 });
 
+test('aplicarSelecao tira as desmarcadas e, sem nada desmarcado, mantém todas', () => {
+  const maiores = M.filtrarSequencias(D.sequencias, 'maior');
+  assert.equal(M.aplicarSelecao(maiores, []).length, 7);
+  assert.equal(M.aplicarSelecao(maiores, undefined).length, 7);
+  const sel = M.aplicarSelecao(maiores, ['Si Maior', 'Fá Maior', 'Dó Menor']);
+  assert.equal(sel.length, 5);
+  assert.ok(!sel.some((s) => s.titulo === 'Si Maior' || s.titulo === 'Fá Maior'));
+});
+
+test('aplicarSelecao volta pra todas se tudo foi desmarcado', () => {
+  const maiores = M.filtrarSequencias(D.sequencias, 'maior');
+  const todasFora = maiores.map((s) => s.titulo);
+  assert.equal(M.aplicarSelecao(maiores, todasFora).length, 7);
+});
+
 test('sortearSequencia não repete a anterior quando há outras', () => {
   const seqs = M.filtrarSequencias(D.sequencias, 'maior');
   for (let k = 0; k < 50; k++) {

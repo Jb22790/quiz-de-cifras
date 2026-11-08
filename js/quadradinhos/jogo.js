@@ -65,9 +65,21 @@
 
   // ---------- estado do jogo ----------
 
+  function lerDesmarcadas() {
+    try {
+      var v = JSON.parse(localStorage.getItem('qd-desmarcadas') || '[]');
+      return Array.isArray(v) ? v : [];
+    } catch (e) { return []; }
+  }
+  function salvarDesmarcadas(lista) {
+    try { localStorage.setItem('qd-desmarcadas', JSON.stringify(lista)); } catch (e) { /* sem storage: vale só nesta sessão */ }
+  }
+
   var estado = {
     filtro: localStorage.getItem('qd-filtro') || 'maior',
     nOpcoes: parseInt(localStorage.getItem('qd-opcoes') || '3', 10),
+    desmarcadas: lerDesmarcadas(),   // títulos fora do treino; vazio = todas
+    original: null,                  // sequência sorteada (pra poder refazer)
     sequencia: null,
     passo: 1,          // índice do acorde que está sendo perguntado (1..3); 4 = terminou
     acertos: 0,
@@ -87,6 +99,11 @@
     document.querySelectorAll('[data-opcoes]').forEach(function (b) {
       b.classList.toggle('on', parseInt(b.dataset.opcoes, 10) === estado.nOpcoes);
     });
+    var doFiltro = Motor.filtrarSequencias(Dados.sequencias, estado.filtro);
+    var marcadas = doFiltro.filter(function (s) { return estado.desmarcadas.indexOf(s.titulo) < 0; }).length;
+    var parcial = marcadas > 0 && marcadas < doFiltro.length;
+    $('sel-conta').textContent = parcial ? marcadas + '/' + doFiltro.length : 'todas';
+    $('btn-escolher').classList.toggle('parcial', parcial);
     $('acertos').textContent = estado.acertos;
     $('erros').textContent = estado.erros;
     $('streak').textContent = estado.streak;
@@ -138,10 +155,11 @@
     clearTimeout(timer);
     var s = escolhida;
     if (!s || !s.acordes) {
-      var lista = Motor.filtrarSequencias(Dados.sequencias, estado.filtro);
+      var lista = Motor.aplicarSelecao(Motor.filtrarSequencias(Dados.sequencias, estado.filtro), estado.desmarcadas);
       var anterior = estado.sequencia ? estado.sequencia.titulo : null;
       s = Motor.sortearSequencia(lista, Math.random, anterior);
     }
+    estado.original = s;
     estado.sequencia = { titulo: s.titulo, acordes: s.acordes, resultados: [] };
     estado.passo = 1;
     estado.travado = false;
@@ -158,9 +176,17 @@
     var certos = r.filter(function (x) { return x === 'ok'; }).length;
     $opcoes.hidden = true;
     $pergunta.textContent = '';
-    $('fim-texto').innerHTML = (certos === 3 ? 'Mandou bem! 🎉' : certos + ' de 3 certos') +
-      '<small>Agora toca ela no cavaco.</small>';
+    var errou = certos < 3;
+    $('fim-texto').innerHTML = (errou ? certos + ' de 3 certos' : 'Mandou bem! 🎉') +
+      '<small>' + (errou ? 'Refaz essa pra fixar, ou segue pra próxima.' : 'Agora toca ela no cavaco.') + '</small>';
+    // errou: "Refazer" vira o botão principal; acertou tudo: "Próxima" é o principal
+    $('btn-refazer').classList.toggle('sec', !errou);
+    $('btn-proxima').classList.toggle('sec', errou);
     $fim.hidden = false;
+  }
+
+  function refazer() {
+    if (estado.original) novaSequencia(estado.original);
   }
 
   function escolher(id) {
@@ -207,10 +233,12 @@
   });
 
   $('btn-proxima').addEventListener('click', function () { novaSequencia(); });
+  $('btn-refazer').addEventListener('click', refazer);
+  $('btn-refazer-mini').addEventListener('click', refazer);
 
-  // ---------- modo estudar: todas as sequências completas ----------
+  // ---------- folha que sobe (usada pelo estudar e pelo escolher) ----------
 
-  function abrirEstudo() {
+  function abrirFolha(titulo, aoFechar) {
     var overlay = document.createElement('div');
     overlay.className = 'overlay';
     var sheet = document.createElement('div');
@@ -219,13 +247,135 @@
 
     var cab = document.createElement('div');
     cab.className = 'sheet-top';
-    cab.innerHTML = '<h3>Estudar sequências</h3>';
-    var fechar = document.createElement('button');
-    fechar.className = 'ico';
-    fechar.setAttribute('aria-label', 'Fechar');
-    fechar.textContent = '✕';
-    cab.appendChild(fechar);
+    var h = document.createElement('h3');
+    h.textContent = titulo;
+    cab.appendChild(h);
+    var x = document.createElement('button');
+    x.className = 'ico';
+    x.setAttribute('aria-label', 'Fechar');
+    x.textContent = '✕';
+    cab.appendChild(x);
     sheet.appendChild(cab);
+
+    function fechar() {
+      overlay.remove();
+      document.removeEventListener('keydown', esc);
+      if (aoFechar) aoFechar();
+    }
+    function esc(e) { if (e.key === 'Escape') fechar(); }
+    x.addEventListener('click', fechar);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) fechar(); });
+    document.addEventListener('keydown', esc);
+    document.body.appendChild(overlay);
+    return { sheet: sheet, fechar: fechar };
+  }
+
+  // ---------- escolher quais sequências entram no sorteio ----------
+
+  function abrirEscolha() {
+    var antes = estado.desmarcadas.slice().sort().join('|');
+    var doFiltro = Motor.filtrarSequencias(Dados.sequencias, estado.filtro);
+
+    var folha = abrirFolha('Escolher sequências', function () {
+      // fechou com nada marcado (✕ ou Esc): volta pra todas em vez de ficar sem treino
+      if (!doFiltro.some(function (s) { return marcada(s.titulo); })) {
+        doFiltro.forEach(function (s) { setMarcada(s.titulo, true); });
+      }
+      salvarDesmarcadas(estado.desmarcadas);
+      atualizarTopo();
+      var mudou = estado.desmarcadas.slice().sort().join('|') !== antes;
+      var atualFora = estado.sequencia && estado.desmarcadas.indexOf(estado.sequencia.titulo) >= 0;
+      // só troca a sequência em jogo se ela saiu da seleção (não perde o progresso à toa)
+      if (mudou && atualFora) novaSequencia();
+    });
+    var sheet = folha.sheet;
+
+    var dica = document.createElement('p');
+    dica.textContent = 'Marca só as que você quer treinar. O sorteio usa apenas as marcadas.';
+    sheet.appendChild(dica);
+
+    var acoes = document.createElement('div');
+    acoes.className = 'sel-acoes';
+    var bTodas = document.createElement('button');
+    bTodas.className = 'chip';
+    bTodas.textContent = 'Marcar todas';
+    var bNenhuma = document.createElement('button');
+    bNenhuma.className = 'chip';
+    bNenhuma.textContent = 'Desmarcar todas';
+    acoes.appendChild(bTodas);
+    acoes.appendChild(bNenhuma);
+    sheet.appendChild(acoes);
+
+    var lista = document.createElement('div');
+    lista.className = 'sel-lista';
+    sheet.appendChild(lista);
+
+    var aviso = document.createElement('p');
+    aviso.className = 'sel-aviso';
+    sheet.appendChild(aviso);
+
+    var pronto = document.createElement('button');
+    pronto.className = 'btn';
+    pronto.textContent = 'Pronto';
+    pronto.addEventListener('click', function () { if (!pronto.disabled) folha.fechar(); });
+    sheet.appendChild(pronto);
+
+    function marcada(titulo) { return estado.desmarcadas.indexOf(titulo) < 0; }
+    function setMarcada(titulo, sim) {
+      var i = estado.desmarcadas.indexOf(titulo);
+      if (sim && i >= 0) estado.desmarcadas.splice(i, 1);
+      if (!sim && i < 0) estado.desmarcadas.push(titulo);
+    }
+
+    function render() {
+      lista.innerHTML = '';
+      doFiltro.forEach(function (seq) {
+        var on = marcada(seq.titulo);
+        var b = document.createElement('button');
+        b.className = 'sel-item' + (on ? ' on' : '');
+        b.setAttribute('role', 'checkbox');
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+        var caixa = document.createElement('span');
+        caixa.className = 'caixa';
+        caixa.textContent = on ? '✓' : '';
+        var txt = document.createElement('span');
+        txt.className = 'sel-txt';
+        var t = document.createElement('b');
+        t.textContent = seq.titulo;
+        var ac = document.createElement('small');
+        ac.textContent = seq.acordes.map(function (id) { return Dados.desenhos[id].nome; }).join(' → ');
+        txt.appendChild(t);
+        txt.appendChild(ac);
+        b.appendChild(caixa);
+        b.appendChild(txt);
+        b.addEventListener('click', function () { setMarcada(seq.titulo, !on); render(); });
+        lista.appendChild(b);
+      });
+      var n = doFiltro.filter(function (s) { return marcada(s.titulo); }).length;
+      pronto.disabled = n === 0;
+      aviso.textContent = n === 0 ? 'Marca pelo menos uma.' : n + ' de ' + doFiltro.length + ' no sorteio';
+    }
+
+    bTodas.addEventListener('click', function () {
+      doFiltro.forEach(function (s) { setMarcada(s.titulo, true); });
+      render();
+    });
+    bNenhuma.addEventListener('click', function () {
+      doFiltro.forEach(function (s) { setMarcada(s.titulo, false); });
+      render();
+    });
+
+    render();
+  }
+
+  $('btn-escolher').addEventListener('click', abrirEscolha);
+
+  // ---------- modo estudar: todas as sequências completas ----------
+
+  function abrirEstudo() {
+    var folha = abrirFolha('Estudar sequências');
+    var sheet = folha.sheet;
+    var fecharEstudo = folha.fechar;
 
     var dica = document.createElement('p');
     dica.textContent = 'Maior: I → VI7 → IIm → V7.  Menor: Im → I7 → IVm → V7.';
@@ -260,16 +410,6 @@
       bloco.appendChild(grade);
       sheet.appendChild(bloco);
     });
-
-    function fecharEstudo() {
-      overlay.remove();
-      document.removeEventListener('keydown', esc);
-    }
-    function esc(e) { if (e.key === 'Escape') fecharEstudo(); }
-    fechar.addEventListener('click', fecharEstudo);
-    overlay.addEventListener('click', function (e) { if (e.target === overlay) fecharEstudo(); });
-    document.addEventListener('keydown', esc);
-    document.body.appendChild(overlay);
   }
 
   $('btn-estudar').addEventListener('click', abrirEstudo);
@@ -282,6 +422,8 @@
     } else if (e.key === 'Enter' && !$fim.hidden) {
       e.preventDefault();
       novaSequencia();
+    } else if (e.key === 'r' || e.key === 'R') {
+      refazer();
     }
   });
 

@@ -57,7 +57,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .nops button { width: 32px; height: 32px; border-radius: 10px; color: var(--mut); font-weight: 600; }
 .nops button.on { background: var(--blu); color: #06263a; }
 
-.chips { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 6px; margin: 0 0 12px; }
+.chips { display: grid; grid-template-columns: repeat(3, 1fr) auto auto; gap: 6px; margin: 0 0 12px; }
 .chip { background: var(--card); padding: 8px 6px; border-radius: 999px; color: var(--mut); font-size: 14px; text-align: center; }
 .chip.on { background: var(--blu); color: #06263a; font-weight: 600; }
 
@@ -66,7 +66,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .prog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--pri)); transition: width .3s; }
 .meta { display: flex; justify-content: space-between; color: var(--mut); font-size: 14px; }
 .meta .placar { display: flex; gap: 10px; font-variant-numeric: tabular-nums; }
-.pill { align-self: center; margin: 12px 0 0; background: var(--card2); padding: 6px 14px; border-radius: 999px; font-size: 14px; color: var(--blu); }
+.pill { margin: 0; background: var(--card2); padding: 6px 14px; border-radius: 999px; font-size: 14px; color: var(--blu); }
 
 /* ---------- a sequência (4 casas) ---------- */
 .seq {
@@ -131,7 +131,6 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
   .opt .dg { width: 48%; }
   .opts.n2 .opt .dg { width: 66%; }
   .opt .nome { font-size: 19px; }
-  .pill { margin-top: 8px; }
   .seq { margin-top: 8px; }
 }
 @media (min-width: 520px) {
@@ -178,3 +177,38 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .treinar:active { transform: translateY(2px); box-shadow: 0 1px 0 #c47f00; }
 .estudo-grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .estudo-grade .casa { background: var(--card); }
+
+/* ---------- refazer ---------- */
+.pill-linha { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 12px 0 0; }
+.refazer-mini {
+  width: 30px; height: 30px; border-radius: 999px; background: var(--card); color: var(--mut);
+  font-size: 17px; display: grid; place-items: center;
+}
+.refazer-mini:active { transform: scale(.92); }
+.fim-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn.sec { background: var(--card2); color: var(--txt); box-shadow: 0 5px 0 var(--shadow); }
+.btn.sec:active { box-shadow: 0 2px 0 var(--shadow); }
+.btn:disabled { opacity: .45; cursor: default; transform: none; }
+
+/* ---------- escolher sequências ---------- */
+.chip.escolher { padding: 8px 10px; background: var(--card2); white-space: nowrap; }
+.chip.escolher b { font-weight: 600; }
+.chip.escolher.parcial { background: var(--pink); color: #3a0030; }
+.sel-acoes { display: flex; gap: 8px; margin-bottom: 10px; }
+.sel-acoes .chip { flex: 1; background: var(--card2); }
+.sel-lista { display: grid; gap: 8px; }
+.sel-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: var(--card2); border-radius: 16px; padding: 10px 12px; border: 2px solid transparent;
+}
+.sel-item.on { border-color: var(--blu); }
+.sel-item .caixa {
+  width: 26px; height: 26px; border-radius: 8px; flex: none; display: grid; place-items: center;
+  border: 2px solid var(--mut); font-weight: 700; font-size: 16px;
+}
+.sel-item.on .caixa { background: var(--blu); border-color: var(--blu); color: #06263a; }
+.sel-txt { display: flex; flex-direction: column; min-width: 0; }
+.sel-txt b { font-weight: 600; }
+.sel-txt small { color: var(--mut); font-size: 13px; }
+.sel-aviso { text-align: center; color: var(--mut); font-size: 14px; margin: 12px 0 10px !important; }
+@media (max-height: 740px) { .pill-linha { margin-top: 8px; } }

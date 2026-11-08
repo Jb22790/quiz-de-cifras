@@ -15,6 +15,16 @@
     return sequencias.filter(function (s) { return s.tipo === filtro; });
   }
 
+  // Tira as sequências que o usuário desmarcou (lista de títulos). Guardamos as
+  // desmarcadas, não as marcadas, pra que o padrão seja sempre "todas".
+  // Se a seleção esvaziar a lista, volta pra todas (nunca fica sem o que sortear).
+  function aplicarSelecao(sequencias, desmarcadas) {
+    var fora = {};
+    (desmarcadas || []).forEach(function (t) { fora[t] = true; });
+    var dentro = sequencias.filter(function (s) { return !fora[s.titulo]; });
+    return dentro.length ? dentro : sequencias.slice();
+  }
+
   function sortearSequencia(sequencias, rng, tituloAnterior) {
     var candidatas = sequencias.filter(function (s) { return s.titulo !== tituloAnterior; });
     if (candidatas.length === 0) candidatas = sequencias;
@@ -70,6 +80,7 @@
   var api = {
     qualidade: qualidade,
     filtrarSequencias: filtrarSequencias,
+    aplicarSelecao: aplicarSelecao,
     sortearSequencia: sortearSequencia,
     gerarOpcoes: gerarOpcoes,
     notasDoDesenho: notasDoDesenho

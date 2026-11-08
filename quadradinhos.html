@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1a1530">
 <title>Quadradinhos</title>
+<link rel="preload" href="fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preload" href="fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/quadradinhos.css">
 </head>
 <body>
@@ -29,6 +29,7 @@
     <button class="chip" data-filtro="maior">Maiores</button>
     <button class="chip" data-filtro="menor">Menores</button>
     <button class="chip" data-filtro="todas">Todas</button>
+    <button class="chip escolher" id="btn-escolher" aria-label="Escolher quais sequências treinar">☑ <b id="sel-conta">todas</b></button>
     <button class="chip estudar" id="btn-estudar" aria-label="Estudar: ver todas as sequências">📖</button>
   </div>
 
@@ -38,14 +39,20 @@
     <span class="placar"><span>✅ <b id="acertos">0</b></span><span>❌ <b id="erros">0</b></span><span>🔥 <b id="streak">0</b></span></span>
   </div>
 
-  <span class="pill" id="titulo-sequencia"></span>
+  <div class="pill-linha">
+    <span class="pill" id="titulo-sequencia"></span>
+    <button class="refazer-mini" id="btn-refazer-mini" aria-label="Recomeçar esta sequência" title="Recomeçar esta sequência">↺</button>
+  </div>
   <div class="seq" id="sequencia"></div>
 
   <p class="ask" id="pergunta"></p>
   <div class="opts" id="opcoes"></div>
   <div id="fim" hidden>
     <p class="fim" id="fim-texto"></p>
-    <button class="btn" id="btn-proxima">Próxima sequência →</button>
+    <div class="fim-botoes">
+      <button class="btn sec" id="btn-refazer">↺ Refazer</button>
+      <button class="btn" id="btn-proxima">Próxima →</button>
+    </div>
   </div>
 </main>
 <script src="js/quadradinhos/dados.js"></script>
