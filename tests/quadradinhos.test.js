@@ -70,8 +70,8 @@ test('gerarOpcoes prefere distratores da mesma qualidade', () => {
 
 test('gerarOpcoes nunca usa outro desenho com o mesmo nome do certo como distrator', () => {
   for (let k = 0; k < 200; k++) {
-    const ops = M.gerarOpcoes(D.desenhos, 'B7', 4, Math.random);
-    assert.ok(!ops.includes('B7-1'));
+    const ops = M.gerarOpcoes(D.desenhos, 'Em', 4, Math.random);
+    assert.ok(!ops.includes('Em-4'));
   }
 });
 

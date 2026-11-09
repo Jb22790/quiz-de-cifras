@@ -21,7 +21,6 @@
     'E':     { nome: 'E',    dedos: [[2, 1, 1], [1, 2, 2], [4, 2, 3]] },
     'C#7':   { nome: 'C#7',  dedos: [[3, 2, 1], [1, 3, 2], [4, 3, 3], [2, 4, 4]] },
     'F#m':   { nome: 'F#m',  dedos: [[2, 2, 1], [3, 2, 2], [1, 4, 3], [4, 4, 4]] },
-    'B7-1':  { nome: 'B7',   dedos: [[1, 1, 1], [2, 2, 2], [4, 4, 4]] },
     'F':     { nome: 'F',    dedos: [[3, 1, 1], [2, 2, 2], [1, 3, 3], [4, 3, 4]] },
     'D7':    { nome: 'D7',   dedos: [[3, 1, 1], [2, 2, 2], [1, 4, 3], [4, 4, 4]] },
     'Gm':    { nome: 'Gm',   dedos: [[2, 3, 1], [3, 3, 2], [1, 5, 3], [4, 5, 4]] },
@@ -45,7 +44,7 @@
   var sequencias = [
     { titulo: 'Dó Maior',  tipo: 'maior', acordes: ['C', 'A7', 'Dm', 'G7'] },
     { titulo: 'Ré Maior',  tipo: 'maior', acordes: ['D', 'B7', 'Em-4', 'A7'] },
-    { titulo: 'Mi Maior',  tipo: 'maior', acordes: ['E', 'C#7', 'F#m', 'B7-1'] },
+    { titulo: 'Mi Maior',  tipo: 'maior', acordes: ['E', 'C#7', 'F#m', 'B7'] },
     { titulo: 'Fá Maior',  tipo: 'maior', acordes: ['F', 'D7', 'Gm', 'C7'] },
     { titulo: 'Sol Maior', tipo: 'maior', acordes: ['G', 'E7', 'Am', 'D7'] },
     { titulo: 'Lá Maior',  tipo: 'maior', acordes: ['A', 'F#7', 'Bm', 'E7'] },
