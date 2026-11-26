@@ -17,7 +17,7 @@
     'G7':    { nome: 'G7',   dedos: [[1, 3, 1], [3, 3, 2], [2, 4, 3], [4, 5, 4]] },
     'D':     { nome: 'D',    dedos: [[2, 2, 1], [3, 3, 2], [1, 4, 3], [4, 4, 4]] },
     'B7':    { nome: 'B7',   dedos: [[2, 2, 1], [1, 4, 2], [3, 4, 3], [4, 4, 4]] },
-    'Em-4':  { nome: 'Em',   dedos: [[2, 4, 1], [1, 5, 2], [3, 5, 3], [4, 5, 4]] },
+    'Em':    { nome: 'Em',   dedos: [[2, 4, 1], [1, 5, 2], [3, 5, 3], [4, 5, 4]] },
     'E':     { nome: 'E',    dedos: [[2, 1, 1], [1, 2, 2], [4, 2, 3]] },
     'C#7':   { nome: 'C#7',  dedos: [[3, 2, 1], [1, 3, 2], [4, 3, 3], [2, 4, 4]] },
     'F#m':   { nome: 'F#m',  dedos: [[2, 2, 1], [3, 2, 2], [1, 4, 3], [4, 4, 4]] },
@@ -37,13 +37,12 @@
     'Cm':    { nome: 'Cm',   dedos: [[3, 4, 1], [1, 5, 2], [2, 5, 3], [4, 5, 4]] },
     'Fm':    { nome: 'Fm',   dedos: [[2, 1, 1], [3, 1, 2], [1, 3, 3], [4, 3, 4]] },
     'F7':    { nome: 'F7',   dedos: [[1, 1, 1], [3, 1, 2], [2, 2, 3], [4, 3, 4]] },
-    'Bbm':   { nome: 'Bbm',  dedos: [[3, 2, 1], [1, 3, 2], [2, 3, 3], [4, 3, 4]] },
-    'Em':    { nome: 'Em',   dedos: [[1, 2, 2], [4, 2, 3]] }
+    'Bbm':   { nome: 'Bbm',  dedos: [[3, 2, 1], [1, 3, 2], [2, 3, 3], [4, 3, 4]] }
   };
 
   var sequencias = [
     { titulo: 'Dó Maior',  tipo: 'maior', acordes: ['C', 'A7', 'Dm', 'G7'] },
-    { titulo: 'Ré Maior',  tipo: 'maior', acordes: ['D', 'B7', 'Em-4', 'A7'] },
+    { titulo: 'Ré Maior',  tipo: 'maior', acordes: ['D', 'B7', 'Em', 'A7'] },
     { titulo: 'Mi Maior',  tipo: 'maior', acordes: ['E', 'C#7', 'F#m', 'B7'] },
     { titulo: 'Fá Maior',  tipo: 'maior', acordes: ['F', 'D7', 'Gm', 'C7'] },
     { titulo: 'Sol Maior', tipo: 'maior', acordes: ['G', 'E7', 'Am', 'D7'] },
